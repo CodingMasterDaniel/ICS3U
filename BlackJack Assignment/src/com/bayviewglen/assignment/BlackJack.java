@@ -9,51 +9,60 @@ public class BlackJack {
 	public static void main(String[] args) throws InterruptedException {
 		Scanner scanner = new Scanner(System.in);
 		
-		introduction();
+		introduction();	//method of displaying intro messages
 		
-		String userName = getUserName(scanner);
+		String userName = getUserName(scanner);	//method for getting user name (AND PREVENTING JUSTIN TO PLAY THE GAME)
+		
+		//while loop to make sure that the game quits when name is quit
 		while(!userName.equalsIgnoreCase("quit")){
 			int wallet = 500;
 			boolean done = false;
-			NumberFormat formatter = getFormatter(scanner);
+			NumberFormat formatter = getFormatter(scanner);	// method of returning a formatter for money
 			 
 			
 			while(!done){
 				
-				wallet = playGame(scanner, wallet, formatter);
+				wallet = playGame(scanner, wallet, formatter);	//method of the actual game, updates wallet after game
 				
 				if(wallet == 0){
-					System.out.println("You don't have any more money!");
+					System.out.println("You don't have any more money!");	
 				}
-				done = (wallet == 0 || playAgain(scanner));
+				done = (wallet == 0 || playAgain(scanner));	//game ends if no more money or choose to not play anymore
 			}
 
 
-			userName = getUserName(scanner);
+			userName = getUserName(scanner);	//method for getting user name within the game loop, making playing game again possible
 		}
 
 
-		closingMessage();
+		closingMessage();	//method of displaying ending 
 		scanner.close();
 
 	}
 
 	private static void closingMessage() throws InterruptedException {
 		System.out.println("Thank you for playing!");
-		Thread.sleep(1000);
+		Thread.sleep(1000);	//Wait a second then display next message
 		System.out.println("Have a nice day!");
 		
 	}
 
 	private static boolean playAgain(Scanner scanner) {
 		boolean play = false;
-		System.out.print("Would you like to play another round? ");
+		System.out.print("Would you like to play another round? ");	//Ask user if they still want to play
+		
 		while(!play){		
 		String a = scanner.nextLine();
+		
+		//LOTS OF POSSIBLE OPTION OF CONTINUE THE GAME
 		if(a.equalsIgnoreCase("Sure") || a.equalsIgnoreCase("Yes") || a.equalsIgnoreCase("ok") || a.equalsIgnoreCase("Go ahead") || a.equalsIgnoreCase("Y")){
 			return false;
+			
+		//LOTS OF POSSIBLE OPTION OF NOT CONTINUE THE GAME
 		}else if(a.equalsIgnoreCase("N") || a.equalsIgnoreCase("NO") || a.equalsIgnoreCase("Hell no") || a.equalsIgnoreCase("quit")){
 			return true;
+			
+		//Get user to choose option again if the previous command is not understandable
 		}else{
 			System.out.print("Please enter a proper response: ");
 		}
@@ -68,7 +77,7 @@ public class BlackJack {
 		
 		System.out.println("<><><><><><><><><><><><><><>GAME START<><><><><><><><><><><><><><>");
 			
-		//Initialize the two cards that the user and dealer suppose to get
+		//initialize the two cards that the user suppose to get
 		String PC1D = getCardDisplay();	//PC1D = PlayerCard1Display
 		int PC1V = getCardValue(PC1D);	//PC1V = PlayerCard1Value
 		String PC1S = getCardSuit();	//PC1S = PlayerCard1Suit
@@ -82,7 +91,7 @@ public class BlackJack {
 		if(PC2D.equals("A"))
 			playerNumOfAce += 1;
 		
-			
+		//initialize the two cards that the dealer suppose to get	
 		String DC1D = getCardDisplay();	//DC1D = DealerCard1Display
 		int DC1V  = getCardValue(DC1D);	//DC1V = DealerCard1Value
 		String DC1S = getCardSuit();	//DC1S = DealerCard1Suit
@@ -97,7 +106,7 @@ public class BlackJack {
 			dealerNumOfAce += 1;
 		
 			
-						
+		//display the two cards				
 		System.out.println("Dealer:\t" + DC1D + DC1S + "\t" + "XX");
 		System.out.println("Player:\t" + playerDisplay);
 		System.out.println("<><><><><><><><><><><><><><><>PLAYING<><><><><><><><><><><><><><><>");
@@ -117,8 +126,9 @@ public class BlackJack {
 		while(calculateScore(playerPoints, playerNumOfAce) < 21 && !playerDone){
 			int action = 0;
 			
+			//player command with double down option available
 			if(2 * bet <= wallet){
-				System.out.print("What do you want to do? 1.Hit   2.Stay   3.Double Down");
+				System.out.print("What do you want to do? 1.Hit   2.Stay   3.Double Down ");
 				
 				boolean properResponse = false;
 				while(!properResponse){		
@@ -136,7 +146,7 @@ public class BlackJack {
 						System.out.print("Please enter a proper response: ");
 					}
 				
-				
+				//consequence of player's command
 				if(action == 1){
 					String playerNextCardDisplay = getCardDisplay();
 					String playerNextCardSuit = getCardSuit();
@@ -184,7 +194,8 @@ public class BlackJack {
 				
 				
 				}
-				
+			
+			//player command without double down option
 			}else{
 				System.out.print("What do you want to do? 1.Hit   2. Stay");
 								
@@ -202,6 +213,8 @@ public class BlackJack {
 					}
 				
 				}
+				
+				//consequences of player's command
 				if(action == 1){
 					String playerNextCardDisplay = getCardDisplay();
 					String playerNextCardSuit = getCardSuit();
@@ -223,7 +236,8 @@ public class BlackJack {
 					playerDone = true;
 				}
 			}
-			
+		
+		//calculate if player immediately win after getting cards or get busted
 		if(calculateScore(playerPoints, playerNumOfAce) > 21){
 			System.out.println("<><><><><><><><><><><><><><><>RESULT<><><><><><><><><><><><><><><>");
 			System.out.println("Dealer:\t" + dealerDisplay + " === " + calculateScore(dealerPoints, dealerNumOfAce));
@@ -248,15 +262,16 @@ public class BlackJack {
 			
 		}
 		
-		//dealer action
-		
+		//dealer starts playing		
 		if(calculateScore(dealerPoints, dealerNumOfAce) != 21){
 			
 			if(calculateScore(dealerPoints, dealerNumOfAce) >= 17){
 				
 			}else{
 				System.out.println("<><><><><><><><><><><><><>DEALER PLAYING<><><><><><><><><><><><><>");
-			while(dealerPoints < 17){
+			
+				//if dealer has points less than 17, dealer will draw another card
+				while(dealerPoints < 17){
 			
 				String dealerNextCardDisplay = getCardDisplay();
 				String dealerNextCardSuit = getCardSuit();
@@ -276,6 +291,7 @@ public class BlackJack {
 			}
 			}
 		
+		//final calculation if player wins or dealer wins
 		if(calculateScore(dealerPoints, dealerNumOfAce) == 21){
 			System.out.println("<><><><><><><><><><><><><><><>RESULT<><><><><><><><><><><><><><><>");
 			System.out.println("Dealer:\t" + dealerDisplay + " === " + calculateScore(dealerPoints, dealerNumOfAce));
@@ -327,6 +343,7 @@ public class BlackJack {
 		return wallet;
 	}
 
+	//method for calculating points from Mr.DesLauriers
 	private static int calculateScore(int currentTotal, int numAces) {
 		int score = currentTotal;
 		
@@ -339,6 +356,7 @@ public class BlackJack {
 	}
 	
 
+	//method for getting suit of card
 	private static String getCardSuit() {
 		int playerCardKind = (int)(Math.random()*4) + 1;
 		String playerCardSuit = "";
@@ -354,6 +372,7 @@ public class BlackJack {
 		return playerCardSuit;
 	}
 
+	//method of getting card value
 	private static int getCardValue(String display) {
 		int CardValue = 0;
 		if(display.equals("A")){
@@ -366,6 +385,7 @@ public class BlackJack {
 		return CardValue;
 	}
 
+	//method of the appropriate display of cards
 	private static String getCardDisplay() {
 		int CardValue = (int)(Math.random()*13) + 1;
 		String CardDisplay = "";
@@ -383,6 +403,7 @@ public class BlackJack {
 		return CardDisplay;
 	}
 
+	//method for getting bet amount
 	private static int getBet(int wallet, NumberFormat formatter, Scanner scanner) {
 		String bank = formatter.format(wallet);
 		System.out.print("\nYou have " + bank + ". Please enter the amount you want to bet: ");
@@ -419,11 +440,13 @@ public class BlackJack {
 		return moneyINT;
 	}
 
+	//method for getting number formatter from a location
 	private static NumberFormat getFormatter(Scanner scanner) {
 		
 		return NumberFormat.getCurrencyInstance(getLocale(scanner));
 	}
 
+	//method of getting locale
 	private static Locale getLocale(Scanner scanner) {
 		boolean location = false;
 		System.out.println("Please select your location from the list below: ");
@@ -477,6 +500,7 @@ public class BlackJack {
 		return null;
 	}
 
+	//method of getting username and prevent Justin to play my game
 	private static String getUserName(Scanner scanner) {
 		System.out.print("Please enter your name: ");
 		String username = scanner.nextLine();
@@ -488,6 +512,7 @@ public class BlackJack {
 		return username;
 	}
 
+	//Beginning messages
 	private static void introduction() throws InterruptedException {
 		System.out.println("Welcome to BlackJack!");
 		Thread.sleep(1000);
